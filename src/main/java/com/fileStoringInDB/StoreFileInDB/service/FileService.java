@@ -35,13 +35,13 @@ public class FileService {
         }
     }
 
-    public void getFile(String filePath, UUID id){
+    public void getFile(String filePath, UUID id) throws IOException{
         File file = new File(filePath);
-        try{
+        // try with resources (closes the file automatically - check medium article)
+        try(FileOutputStream outputFile = new FileOutputStream(file);){
             Optional<FileEntity> fileEntity = fileRepository.findById(id);
             if(fileEntity.isPresent()) {
                 byte[] fileData = fileEntity.get().getData();
-                FileOutputStream outputFile = new FileOutputStream(file);
                 outputFile.write(fileData);
             } else {
                 throw new RuntimeException("File not found with ID: " + id);
